@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'my-app'
         IMAGE_TAG = 'latest'
-        NEXUS_URL = 'http://localhost:8083'          // Nexus Docker connector URL with correct port
+        NEXUS_URL = 'localhost:8083'          // Nexus Docker connector URL with correct port
         DOCKER_CREDENTIALS_ID = 'nexus_id'           // Jenkins credentials ID for Nexus
     }
 
