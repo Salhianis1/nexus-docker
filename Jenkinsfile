@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // ✅ ONLY use host:port or hostname for Docker login
-        NEXUS_HOST = "0.0.0.0:8081"
+        NEXUS_HOST = "http://0.0.0.0:8081/repository/docker-repo"
         IMAGE_NAME = "${NEXUS_HOST}/my-app"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         NEXUS_CREDENTIALS_ID = "nexus-id"
