@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'my-app'                         // Name of the Docker image
         IMAGE_TAG = 'latest'                          // Tag for the image
-        NEXUS_URL = '0.0.0.0:8081'          // Nexus Docker registry URL
+        NEXUS_URL = 'localhost:8081'          // Nexus Docker registry URL
         NEXUS_REPO = 'docker-repo'                  // Nexus repository name (Docker hosted)
         DOCKER_CREDENTIALS_ID = 'nexus_id'  // Jenkins credentials ID
     }
