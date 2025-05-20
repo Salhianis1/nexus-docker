@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'my-app'                         
         IMAGE_TAG = 'latest'                          
-        NEXUS_URL = 'ocalhost:8081'                  // Docker registry port exposed by Nexus
+        NEXUS_URL = 'ocalhost:8082'                  // Docker registry port exposed by Nexus
         NEXUS_REPO = 'docker-repo'                    
         DOCKER_CREDENTIALS_ID = 'nexus_id'            
     }
