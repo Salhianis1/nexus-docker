@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Nexus Docker repo URL
         NEXUS_REPO = 'docker-repo'
-        IMAGE_TAG = "latest"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
         // Jenkins credential ID for Nexus login
         NEXUS_CREDENTIALS_ID = 'nexus_id'
     }
