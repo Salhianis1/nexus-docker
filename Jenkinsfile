@@ -2,11 +2,10 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'my-app'                         
-        IMAGE_TAG = 'latest'                          
-        NEXUS_URL = 'localhost:8082'                  // Docker registry port exposed by Nexus
-        NEXUS_REPO = 'docker-repo'                    
-        DOCKER_CREDENTIALS_ID = 'nexus_id'            
+        IMAGE_NAME = 'my-app'
+        IMAGE_TAG = 'latest'
+        NEXUS_URL = 'http://localhost:8083'          // Nexus Docker connector URL with correct port
+        DOCKER_CREDENTIALS_ID = 'nexus_id'           // Jenkins credentials ID for Nexus
     }
 
     stages {
@@ -43,7 +42,7 @@ pipeline {
         stage('Tag & Push Docker Image') {
             steps {
                 script {
-                    def fullImageName = "${NEXUS_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+                    def fullImageName = "${NEXUS_URL.replace('http://', '')}/${IMAGE_NAME}:${IMAGE_TAG}"
                     sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${fullImageName}"
                     sh "docker push ${fullImageName}"
                 }
