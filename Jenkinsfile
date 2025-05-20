@@ -6,7 +6,7 @@ pipeline {
         NEXUS_HOST = "0.0.0.0:8081"
         IMAGE_NAME = "${NEXUS_HOST}/my-app"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        NEXUS_CREDENTIALS_ID = "nexus-docker-credentials"
+        NEXUS_CREDENTIALS_ID = "nexus-id"
     }
 
     stages {
