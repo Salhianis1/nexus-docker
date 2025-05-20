@@ -2,61 +2,47 @@ pipeline {
     agent any
 
     environment {
-        registry = 'salhianis20/nexus-docker'
-        registryCredential = 'dockerhub-id'
+        // Nexus Docker repo URL
+        NEXUS_REPO = 'nexus.example.com:8083/myproject/myapp'
+        IMAGE_TAG = "1.0"
+        // Jenkins credential ID for Nexus login
+        NEXUS_CREDENTIALS_ID = 'nexus-docker-credentials'
     }
 
     stages {
-
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/Salhianis1/nexus-docker.git', branch: 'main'
+                checkout scm
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${env.registry}:${env.BUILD_NUMBER}")
+                    dockerImage = docker.build("${NEXUS_REPO}:${IMAGE_TAG}")
                 }
             }
         }
 
-        stage('Push Docker Image to Docker Hub') {
+        stage('Login to Nexus Docker Registry') {
             steps {
-                script {
-                    withVault(
-                        configuration: [
-                            vaultCredentialId: 'vault-cred',
-                            vaultUrl: 'http://127.0.0.1:8200',
-                            timeout: 60,
-                            disableChildPoliciesOverride: false
-                        ],
-                        vaultSecrets: [[
-                            path: 'secret/dockercred',
-                            secretValues: [
-                                [envVar: 'DOCKER_USERNAME', vaultKey: 'username'],
-                                [envVar: 'DOCKER_PASSWORD', vaultKey: 'pwd']
-                            ]
-                        ]]
-                    ) {
-                        // Login and push
-                        sh 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
-                        dockerImage.push()
-                        sh 'docker logout'
-                    }
+                withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIALS_ID}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh "echo $NEXUS_PASS | docker login ${NEXUS_REPO.split('/')[0]} -u $NEXUS_USER --password-stdin"
                 }
             }
         }
 
-        stage('Run Container') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    sh """
-                        docker rm -f web-app-container || true
-                        docker run -d --name web-app-container -p 8084:80 ${env.registry}:${env.BUILD_NUMBER}
-                    """
+                    dockerImage.push()
                 }
+            }
+        }
+
+        stage('Logout from Nexus') {
+            steps {
+                sh "docker logout ${NEXUS_REPO.split('/')[0]}"
             }
         }
     }
