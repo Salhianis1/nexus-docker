@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Replace with your actual Nexus hostname or IP and correct Docker repo port (usually 8082)
         NEXUS_URL = "localhost:8081" 
         NEXUS_REPOSITORY = "docker-repo"
         NEXUS_CREDENTIAL_ID = "nexus_id"  // Jenkins credential ID for Nexus username/password
