@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        registry = 'salhianis20/web-app'
+        registry = 'salhianis20/nexus-docker'
         registryCredential = 'dockerhub-id'
     }
 
@@ -10,7 +10,7 @@ pipeline {
 
         stage('Clone Repo') {
             steps {
-                git url: 'https://github.com/Salhianis1/web-app.git', branch: 'master'
+                git url: 'https://github.com/Salhianis1/nexus-docker.git', branch: 'main'
             }
         }
 
