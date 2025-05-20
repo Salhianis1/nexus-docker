@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NEXUS_URL = "0.0.0.0:8085"        // No protocol
+        NEXUS_URL = "0.0.0.0:8081"        // No protocol
         NEXUS_REPOSITORY = "docker-repo"
         NEXUS_CREDENTIAL_ID = "nexus_id"  // Your Jenkins credentials ID
     }
