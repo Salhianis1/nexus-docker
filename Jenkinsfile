@@ -6,7 +6,7 @@ pipeline {
         IMAGE_TAG = 'latest'                          // Tag for the image
         NEXUS_URL = '0.0.0.0:8081'          // Nexus Docker registry URL
         NEXUS_REPO = 'docker-hosted'                  // Nexus repository name (Docker hosted)
-        DOCKER_CREDENTIALS_ID = 'nexus-_id'  // Jenkins credentials ID
+        DOCKER_CREDENTIALS_ID = 'nexus_id'  // Jenkins credentials ID
     }
 
     stages {
