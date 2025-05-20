@@ -1,57 +1,51 @@
-
 pipeline {
     agent any
 
     environment {
-        NEXUS_URL = "localhost:8081" 
-        NEXUS_REPOSITORY = "repository/docker-repo"
-        NEXUS_CREDENTIAL_ID = "nexus_id"  // Jenkins credential ID for Nexus username/password
-    }
-
-    parameters {
-        string(name: 'RELEASE_VERSION', defaultValue: "1.0.${BUILD_NUMBER}", description: 'Version to release')
+        // ✅ ONLY use host:port or hostname for Docker login
+        NEXUS_HOST = "0.0.0.0:8081"
+        IMAGE_NAME = "${NEXUS_HOST}/my-app"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        NEXUS_CREDENTIALS_ID = "nexus-docker-credentials"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Salhianis1/nexus-docker.git', branch: 'main'
+                checkout scm
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    IMAGE_NAME = "${NEXUS_URL}/${NEXUS_REPOSITORY}/myapp:${params.RELEASE_VERSION}"
-                    echo "Building Docker image: ${IMAGE_NAME}"
-                    docker.build(IMAGE_NAME)
+                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                 }
             }
         }
 
-        stage('Docker Login') {
+        stage('Login to Nexus Docker Registry') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIAL_ID}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                    sh '''
-                        echo "$NEXUS_PASS" | docker login ${NEXUS_URL} -u "$NEXUS_USER" --password-stdin
-                    '''
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIALS_ID}",
+                                                  usernameVariable: 'NEXUS_USER',
+                                                  passwordVariable: 'NEXUS_PASS')]) {
+                        sh "docker login -u $NEXUS_USER -p $NEXUS_PASS ${NEXUS_HOST}"
+                    }
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    echo "Pushing Docker image: ${IMAGE_NAME}"
-                    sh "docker push ${IMAGE_NAME}"
-                }
+                sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
             }
         }
+    }
 
-        stage('Docker Logout') {
-            steps {
-                sh "docker logout ${NEXUS_URL}"
-            }
+    post {
+        always {
+            sh "docker logout ${NEXUS_HOST}"
         }
     }
 }
