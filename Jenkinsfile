@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         NEXUS_URL = "localhost:8081" 
-        NEXUS_REPOSITORY = "docker-repo"
+        NEXUS_REPOSITORY = "/repository/docker-repo"
         NEXUS_CREDENTIAL_ID = "nexus_id"  // Jenkins credential ID for Nexus username/password
     }
 
