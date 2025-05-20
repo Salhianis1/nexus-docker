@@ -43,9 +43,4 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            sh "docker logout ${NEXUS_HOST}"
-        }
-    }
 }
