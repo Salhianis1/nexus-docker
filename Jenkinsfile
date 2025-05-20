@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         // Nexus Docker repo URL
-        NEXUS_REPO = 'nexus.example.com:8083/myproject/myapp'
-        IMAGE_TAG = "1.0"
+        NEXUS_REPO = 'docker-repo'
+        IMAGE_TAG = "latest"
         // Jenkins credential ID for Nexus login
-        NEXUS_CREDENTIALS_ID = 'nexus-docker-credentials'
+        NEXUS_CREDENTIALS_ID = 'nexus_id'
     }
 
     stages {
