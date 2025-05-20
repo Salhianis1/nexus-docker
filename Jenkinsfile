@@ -6,7 +6,7 @@ pipeline {
         NEXUS_HOST = "0.0.0.0:8081"
         IMAGE_NAME = "my-app"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        NEXUS_CREDENTIALS_ID = "nexus-id"
+        NEXUS_CREDENTIALS_ID = "nexus_id"
     }
 
     stages {
