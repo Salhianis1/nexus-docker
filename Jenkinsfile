@@ -2,13 +2,14 @@ pipeline {
     agent any
 
     environment {
-        NEXUS_URL = "localhost:8081"        // No protocol
+        // Replace with your actual Nexus hostname or IP and correct Docker repo port (usually 8082)
+        NEXUS_URL = "localhost:8082" 
         NEXUS_REPOSITORY = "docker-repo"
-        NEXUS_CREDENTIAL_ID = "nexus_id"  // Your Jenkins credentials ID
+        NEXUS_CREDENTIAL_ID = "nexus_id"  // Jenkins credential ID for Nexus username/password
     }
 
     parameters {
-        string(name: 'RELEASE_VERSION', defaultValue: "1.0.${env.BUILD_NUMBER}", description: 'Version to release')
+        string(name: 'RELEASE_VERSION', defaultValue: "1.0.${BUILD_NUMBER}", description: 'Version to release')
     }
 
     stages {
@@ -21,8 +22,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def imageName = "${NEXUS_URL}/${NEXUS_REPOSITORY}/myapp:${params.RELEASE_VERSION}"
-                    docker.build(imageName)
+                    IMAGE_NAME = "${NEXUS_URL}/${NEXUS_REPOSITORY}/myapp:${params.RELEASE_VERSION}"
+                    echo "Building Docker image: ${IMAGE_NAME}"
+                    docker.build(IMAGE_NAME)
                 }
             }
         }
@@ -31,7 +33,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIAL_ID}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
-                        echo "$NEXUS_PASS" | docker login ${NEXUS_URL} -u $NEXUS_USER --password-stdin
+                        echo "$NEXUS_PASS" | docker login ${NEXUS_URL} -u "$NEXUS_USER" --password-stdin
                     '''
                 }
             }
@@ -40,8 +42,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    def imageName = "${NEXUS_URL}/${NEXUS_REPOSITORY}/myapp:${params.RELEASE_VERSION}"
-                    sh "docker push ${imageName}"
+                    echo "Pushing Docker image: ${IMAGE_NAME}"
+                    sh "docker push ${IMAGE_NAME}"
                 }
             }
         }
