@@ -6,12 +6,12 @@ pipeline {
     }
 
     stages {
-        /* stage('SCM Checkout') {
+         stage('SCM Checkout') {
             steps {
                 git branch: 'master', url: 'https://github.com/Salhianis1/nexus-docker.gi'
             //sh 'whoami'
             }
-        } */
+        } 
         
        stage('Docker Build') {
         
